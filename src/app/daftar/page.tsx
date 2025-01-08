@@ -1,127 +1,142 @@
 "use client";
-import { useState, ChangeEvent, FormEvent } from "react";
+import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Footer from "@/components/footer";
-import Navbar from "@/components/navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
-// Type untuk form state
+
+// Type for form state
 interface FormState {
-  email: string;
+  emailOrPhone: string;
   password: string;
-  confirmPassword: string; // Menambahkan state untuk konfirmasi password
-  namaLengkap: string;
-  nomorTelepon: string;
-  alamat: string;
 }
 
 export default function Daftar() {
   const [formData, setFormData] = useState<FormState>({
-    email: "",
+    emailOrPhone: "",
     password: "",
-    confirmPassword: "", // Inisialisasi konfirmasi password
-    namaLengkap: "",
-    nomorTelepon: "",
-    alamat: "",
   });
 
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false); // Menambahkan state untuk toggle konfirmasi password
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  // Fungsi untuk menangani perubahan input
-  const handleInputChange = (
-    e: ChangeEvent<HTMLInputElement>
-  ): void => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+// Handle input change
+const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+  const { id, value } = e.target;
+
+  setFormData((prevData) => ({
+    ...prevData,
+    [id]: value,
+  }));
+
+  // Reset error for the specific input if error exists
+  setErrors((prevErrors) => ({
+    ...prevErrors,
+    [id]: '', // Reset the error message for the field
+  }));
+};
+
+
+  // Simplified password validation (with more checks)
+  const validatePassword = (password: string): string | null => {
+    const regex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$/;
+    if (!regex.test(password)) {
+      return "Password must be at least 6 characters, contain an uppercase letter, a number, and a special character.";
+    }
+    return null;
   };
 
-  // Fungsi untuk menangani pengiriman form
-  const handleSubmit = (e: FormEvent) => {
+  // Email/Phone validation
+  const validateEmailOrPhone = (emailOrPhone: string): string | null => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const phoneRegex = /^[0-9]{10,15}$/;
+    if (!emailOrPhone) {
+      return "Email or Phone number is required.";
+    }
+    if (!emailRegex.test(emailOrPhone) && !phoneRegex.test(emailOrPhone)) {
+      return "Please enter a valid email or phone number.";
+    }
+    return null;
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const { email, password, confirmPassword, namaLengkap, nomorTelepon, alamat } = formData;
+    const { emailOrPhone, password } = formData;
     let newErrors: { [key: string]: string } = {};
 
-    // Validasi form
-    if (!email) newErrors.email = "Email harus diisi.";
-    if (!password) newErrors.password = "Password harus diisi.";
-    if (password !== confirmPassword) newErrors.confirmPassword = "Konfirmasi password tidak cocok.";
-    if (!namaLengkap) newErrors.namaLengkap = "Nama Lengkap harus diisi.";
-    if (!nomorTelepon) newErrors.nomorTelepon = "Nomor Telepon harus diisi.";
-    if (!alamat) newErrors.alamat = "Alamat harus diisi.";
+    // Validate form
+    const emailOrPhoneError = validateEmailOrPhone(emailOrPhone);
+    if (emailOrPhoneError) newErrors.emailOrPhone = emailOrPhoneError;
+    if (!password) newErrors.password = "Password is required.";
+
+    // Validate password strength
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      newErrors.password = passwordError;
+    }
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    console.log("Data yang dikirim:", formData);
+    setIsSubmitting(true);
+
+    try {
+      // Simulate backend request (Replace this with actual API call)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+     
+      alert("Form submitted successfully!");
+      window.location.href = "/api/auth/verifikasi";
+    } catch (error) {
+      console.error("Form submission error:", error);
+      alert("There was an error. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  // Toggle visibilitas password
+  // Clear password error when user starts typing
+  useEffect(() => {
+    if (formData.password) {
+      const passwordError = validatePassword(formData.password);
+      if (!passwordError && errors.password) {
+        setErrors((prevErrors) => {
+          const { password, ...rest } = prevErrors; // Remove password error
+          return rest;
+        });
+      }
+    }
+  }, [formData.password, errors.password]);
+
+  // Toggle password visibility
   const togglePasswordVisibility = (): void => {
     setShowPassword((prevState) => !prevState);
   };
 
-  // Toggle visibilitas konfirmasi password
-  const toggleConfirmPasswordVisibility = (): void => {
-    setShowConfirmPassword((prevState) => !prevState);
-  };
-
   return (
     <>
-      <Navbar />
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-500">
         <form onSubmit={handleSubmit} className="w-96 bg-white p-8 rounded-lg shadow-lg">
           <h2 className="text-center text-2xl font-bold mb-6">Formulir Pendaftaran</h2>
 
-          {/* Input Nama Lengkap */}
+          {/* Input Email or Phone */}
           <div className="mb-4">
-            <Label htmlFor="namaLengkap">Nama Lengkap</Label>
+            <Label htmlFor="emailOrPhone">Email atau Nomor Telepon</Label>
             <Input
-              id="namaLengkap"
+              id="emailOrPhone"
               type="text"
-              placeholder="Nama Lengkap"
-              value={formData.namaLengkap}
+              placeholder="Email atau Nomor Telepon"
+              value={formData.emailOrPhone}
               onChange={handleInputChange}
               required
             />
-            {errors.namaLengkap && <p className="text-red-500 text-sm mt-1">{errors.namaLengkap}</p>}
-          </div>
-
-          {/* Input Email */}
-          <div className="mb-4">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Email Anda"
-              value={formData.email}
-              onChange={handleInputChange}
-              required
-            />
-            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-          </div>
-
-          {/* Input Nomor Telepon */}
-          <div className="mb-4">
-            <Label htmlFor="nomorTelepon">Nomor Telepon</Label>
-            <Input
-              id="nomorTelepon"
-              type="text"
-              placeholder="Nomor Telepon"
-              value={formData.nomorTelepon}
-              onChange={handleInputChange}
-              required
-            />
-            {errors.nomorTelepon && <p className="text-red-500 text-sm mt-1">{errors.nomorTelepon}</p>}
+            {errors.emailOrPhone && <p className="text-red-500 text-sm mt-1">{errors.emailOrPhone}</p>}
           </div>
 
           {/* Input Password */}
@@ -145,42 +160,12 @@ export default function Daftar() {
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
           </div>
 
-          {/* Input Konfirmasi Password */}
-          <div className="mb-4 relative">
-            <Label htmlFor="confirmPassword">Ketik Ulang Password</Label>
-            <Input
-              id="confirmPassword"
-              type={showConfirmPassword ? "text" : "password"}
-              placeholder="Ketik ulang password Anda"
-              value={formData.confirmPassword}
-              onChange={handleInputChange}
-              required
-            />
-            <button
-              type="button"
-              className="absolute right-2 top-9 text-gray-500"
-              onClick={toggleConfirmPasswordVisibility}
-            >
-              <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
-            </button>
-            {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
-          </div>
-
-          {/* Input Alamat */}
-          <div className="mb-4">
-            <Label htmlFor="alamat">Alamat</Label>
-            <Input
-              id="alamat"
-              type="text"
-              placeholder="Alamat Lengkap"
-              value={formData.alamat}
-              onChange={handleInputChange}
-              required
-            />
-            {errors.alamat && <p className="text-red-500 text-sm mt-1">{errors.alamat}</p>}
-          </div>
-
-          <Button type="submit" className="w-full">Daftar</Button>
+          <Button
+            type="submit"
+            className="w-full"
+          >
+            {isSubmitting ? "Submitting..." : "Daftar"}
+          </Button>
         </form>
       </div>
       <Footer />

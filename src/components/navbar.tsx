@@ -48,7 +48,7 @@ function Navbar() {
             </Link>
           </li>
           <Link href="/masuk">
-              <Button className="bg-green-600 hover:bg-green-700">Masuk</Button>
+              <Button className="bg-green-600 hover:bg-green-700">Masuk / Daftar</Button>
             </Link>
         </nav>
 
@@ -77,7 +77,7 @@ function Navbar() {
           Komunitas
         </Link>
         <Link href="/masuk">
-              <Button>Masuk</Button>
+              <Button>Masuk / Daftar</Button>
             </Link>
       </div>
       </div>

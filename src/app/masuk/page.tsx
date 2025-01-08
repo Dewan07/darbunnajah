@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import Footer from "@/components/footer";
-import Navbar from "@/components/navbar";
+import Link from "next/link";
 import ButtonGoogle from "@/components/ButtonGoogle";
 
 export default function Masuk() {
@@ -24,11 +24,15 @@ export default function Masuk() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleEmailChange = (e: { target: { value: SetStateAction<string> } }) => {
+  const handleEmailChange = (e: {
+    target: { value: SetStateAction<string> };
+  }) => {
     setEmail(e.target.value);
   };
 
-  const handlePasswordChange = (e: { target: { value: SetStateAction<string> } }) => {
+  const handlePasswordChange = (e: {
+    target: { value: SetStateAction<string> };
+  }) => {
     setPassword(e.target.value);
   };
 
@@ -42,7 +46,8 @@ export default function Masuk() {
     }
 
     // Perlindungan dasar SQL Injection
-    const sqlInjectionRegex = /(\b(SELECT|INSERT|DELETE|UPDATE|DROP|ALTER|CREATE|TRUNCATE|EXEC)\b)/gi;
+    const sqlInjectionRegex =
+      /(\b(SELECT|INSERT|DELETE|UPDATE|DROP|ALTER|CREATE|TRUNCATE|EXEC)\b)/gi;
     if (sqlInjectionRegex.test(email) || sqlInjectionRegex.test(password)) {
       alert("Input tidak valid.");
       return;
@@ -58,11 +63,12 @@ export default function Masuk() {
 
   return (
     <>
-
       <div className="flex items-center justify-center min-h-screen bg-gray-50 bg-gradient-to-r from-green-500">
         <Card className="w-[480px] shadow-lg rounded-lg">
           <CardHeader>
-            <CardTitle className="text-2xl font-semibold text-center">Selamat Datang Kembali</CardTitle>
+            <CardTitle className="text-2xl font-semibold text-center">
+              Selamat Datang Kembali
+            </CardTitle>
             <CardDescription className="text-center">
               Masukkan email dan password Anda untuk masuk.
             </CardDescription>
@@ -99,14 +105,20 @@ export default function Masuk() {
                       className="absolute right-3 text-gray-600 hover:text-gray-800"
                       onClick={togglePasswordVisibility}
                     >
-                      <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} size="sm" />
+                      <FontAwesomeIcon
+                        icon={showPassword ? faEyeSlash : faEye}
+                        size="sm"
+                      />
                     </button>
                   </div>
                 </div>
 
                 {/* Lupa Password */}
                 <div className="text-right">
-                  <a href="/forgot-password" className="text-sm text-blue-600 hover:underline">
+                  <a
+                    href="/forgot-password"
+                    className="text-sm text-blue-600 hover:underline"
+                  >
                     Lupa Password?
                   </a>
                 </div>
@@ -116,18 +128,16 @@ export default function Masuk() {
                 <Button type="submit" className="w-full">
                   Masuk
                 </Button>
+                <Link href="/daftar">
+                  <Button>Daftar</Button>
+                </Link>
               </CardFooter>
             </form>
-              {/* Tombol Masuk dengan Google */}
+            {/* Tombol Masuk dengan Google */}
             <ButtonGoogle />
           </CardContent>
 
-          <CardFooter className="flex flex-col space-y-1 mt-2">
-            
-        
-          
-          </CardFooter>
-          
+          <CardFooter className="flex flex-col space-y-1 mt-2"></CardFooter>
         </Card>
       </div>
       <Footer />
