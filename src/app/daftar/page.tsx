@@ -6,24 +6,30 @@ import { Label } from "@/components/ui/label";
 import Footer from "@/components/footer";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import { useRouter } from "next/navigation";
 
 
 // Type for form state
 interface FormState {
-  emailOrPhone: string;
+  email: string;
   password: string;
 }
 
+
+
 export default function Daftar() {
+  const router = useRouter();
+
+
   const [formData, setFormData] = useState<FormState>({
-    emailOrPhone: "",
+    email: "",
     password: "",
   });
-
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [message, setMessage] = useState<string | null>(null);
 // Handle input change
 const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
   const { id, value } = e.target;
@@ -36,7 +42,9 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
   // Reset error for the specific input if error exists
   setErrors((prevErrors) => ({
     ...prevErrors,
+    
     [id]: '', // Reset the error message for the field
+    general :'',
   }));
 };
 
@@ -51,55 +59,75 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
   };
 
   // Email/Phone validation
-  const validateEmailOrPhone = (emailOrPhone: string): string | null => {
+  const validateemail = (email: string): string | null => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const phoneRegex = /^[0-9]{10,15}$/;
-    if (!emailOrPhone) {
-      return "Email or Phone number is required.";
+    if (!email) {
+      return "masukan email anda.";
     }
-    if (!emailRegex.test(emailOrPhone) && !phoneRegex.test(emailOrPhone)) {
-      return "Please enter a valid email or phone number.";
+    if (!emailRegex.test(email) && !phoneRegex.test(email)) {
+      return "masukan alamat email yang valid.";
     }
     return null;
   };
 
   // Handle form submission
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {    
     e.preventDefault();
-    const { emailOrPhone, password } = formData;
+    const { email, password } = formData;
     let newErrors: { [key: string]: string } = {};
-
-    // Validate form
-    const emailOrPhoneError = validateEmailOrPhone(emailOrPhone);
-    if (emailOrPhoneError) newErrors.emailOrPhone = emailOrPhoneError;
-    if (!password) newErrors.password = "Password is required.";
-
-    // Validate password strength
+    
+    // Validasi form
+    const emailError = validateemail(email);
+    if (emailError) newErrors.email = emailError;
+  
+    if (!password) newErrors.password = "Memerlukan password";
+  
+    // Validasi kekuatan password
     const passwordError = validatePassword(password);
     if (passwordError) {
       newErrors.password = passwordError;
     }
-
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
-    setIsSubmitting(true);
-
+  
     try {
-      // Simulate backend request (Replace this with actual API call)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-     
-      alert("Form submitted successfully!");
-      window.location.href = "/api/auth/verifikasi";
-    } catch (error) {
-      console.error("Form submission error:", error);
-      alert("There was an error. Please try again.");
+      // Pastikan hanya mengirim email dan password
+      const response = await fetch("http://localhost:3000/api/daftar", {
+        method: "POST",
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      // Tangani hasil response
+      const data = await response.json();
+
+      if (response.ok) {
+        // Jika berhasil
+        // Lakukan navigasi atau update UI sesuai kebutuhan
+        router.push("/verifikasi");
+      } else {
+        // Jika ada error pada API
+        // console.error("Error creating user:", data.error);
+        setErrors({ general: data.error || "Something went wrong!" });
+      }
+    } catch (error: any) {
+      // console.error("An error occurred:", error);
+      setErrors({ general: "Something went wrong. Please try again." });
     } finally {
       setIsSubmitting(false);
+      setMessage("Pendaftaran berhasil, silahkan cek email anda untuk verifikasi.");
     }
   };
+  
+
 
   // Clear password error when user starts typing
   useEffect(() => {
@@ -119,24 +147,26 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setShowPassword((prevState) => !prevState);
   };
 
+
   return (
     <>
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-green-500">
-        <form onSubmit={handleSubmit} className="w-96 bg-white p-8 rounded-lg shadow-lg">
+        <form className="w-96 bg-white p-8 rounded-lg shadow-lg" onSubmit={handleSubmit}>
           <h2 className="text-center text-2xl font-bold mb-6">Formulir Pendaftaran</h2>
 
           {/* Input Email or Phone */}
           <div className="mb-4">
-            <Label htmlFor="emailOrPhone">Email atau Nomor Telepon</Label>
+            <Label htmlFor="email">Email</Label>
             <Input
-              id="emailOrPhone"
+              id="email"
               type="text"
-              placeholder="Email atau Nomor Telepon"
-              value={formData.emailOrPhone}
+              placeholder="Email"
+              value={formData.email}
               onChange={handleInputChange}
               required
             />
-            {errors.emailOrPhone && <p className="text-red-500 text-sm mt-1">{errors.emailOrPhone}</p>}
+            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+          
           </div>
 
           {/* Input Password */}
@@ -159,12 +189,19 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
             </button>
             {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
           </div>
-
+             {/* Error Message */}
+             {errors.general && (
+            <div className="text-red-500 text-sm mb-4">
+              {errors.general}
+            </div>
+          )}
+            
+          {/* Submit Button */}   
           <Button
             type="submit"
-            className="w-full"
+            className="w-full transition-transform duration-300 ease-in-out hover:scale-105"
           >
-            {isSubmitting ? "Submitting..." : "Daftar"}
+            {isSubmitting ? 'Memverifikasi...' : 'Daftar' }
           </Button>
         </form>
       </div>

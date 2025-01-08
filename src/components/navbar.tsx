@@ -5,9 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { Button } from "./ui/button";
+import { signIn } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import ButtonSession from "./ButtonSession";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { data: session } = useSession(); // Mengambil sesi dari NextAuth
 
   // Toggle navbar untuk mengubah status isOpen
   const toggleNavbar = () => {
@@ -47,9 +51,19 @@ function Navbar() {
               Komunitas
             </Link>
           </li>
+
+          <li className="list-none">
+          {session? (
+
+            <ButtonSession/>  
+          ):
           <Link href="/masuk">
-              <Button className="bg-green-600 hover:bg-green-700">Masuk / Daftar</Button>
+            <Button className="bg-green-600 hover:bg-green-700">Masuk / Daftar</Button>
             </Link>
+        }
+
+          </li>
+              
         </nav>
 
         {/* Navbar untuk scree  n kecil */}
@@ -76,9 +90,13 @@ function Navbar() {
         <Link href="/komunitas" className="font-bold mt-4">
           Komunitas
         </Link>
-        <Link href="/masuk">
-              <Button>Masuk / Daftar</Button>
-            </Link>
+              <Button
+              className="w-full"
+                onClick={ () => {
+                   signIn("Credentials");
+                }}
+              >Masuk / Daftar</Button>
+           
       </div>
       </div>
 
