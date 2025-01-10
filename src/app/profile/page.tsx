@@ -4,8 +4,9 @@ import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import SignOutButton from "@/components/ButtonLogout";
-import NavbarProfile from "@/components/navbarProfile";
+
 import Image from "next/image";
+import Navbar from "@/components/navbar";
 
 const Profile = () => {
   const { data: session, status } = useSession();
@@ -35,7 +36,7 @@ const Profile = () => {
 
   return (
     <div>
-      <NavbarProfile />
+      <Navbar />
 
       {/* Ini halaman profile */}
       <div className="flex flex-col items-center justify-center">
