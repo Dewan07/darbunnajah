@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 export default function SignOutButton() {
   return (
     
-    <Button onClick={() => signOut()}>
+    <Button className="mt-5" onClick={() => signOut()}>
       Sign out
     </Button>
   );
