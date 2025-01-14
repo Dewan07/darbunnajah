@@ -48,7 +48,7 @@ const VerifikasiPage: React.FC = () => {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        // const data = await response.json();
         
         // Only update the status if the user is authenticated
         if (status === "authenticated") {
@@ -61,8 +61,6 @@ const VerifikasiPage: React.FC = () => {
         const data = await response.json();
         setError(data.error || "Terjadi kesalahan saat verifikasi.");
       }
-    } catch (err) {
-      setError("Terjadi kesalahan koneksi. Silakan coba lagi.");
     } finally {
       setIsLoading(false);
     }
@@ -94,9 +92,7 @@ const VerifikasiPage: React.FC = () => {
         const data = await response.json();
         setError(data.error || "Gagal mengirim ulang kode.");
       }
-    } catch (err) {
-      setError("Terjadi kesalahan koneksi. Silakan coba lagi.");
-    } finally {
+    }  finally {
       setIsLoading(false);
     }
   };

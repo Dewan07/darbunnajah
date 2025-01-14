@@ -29,7 +29,7 @@ export default function Daftar() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [message, setMessage] = useState<string | null>(null);
+
 // Handle input change
 const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
   const { id, value } = e.target;
@@ -75,7 +75,7 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
   const handleSubmit = async (e: FormEvent) => {    
     e.preventDefault();
     const { email, password } = formData;
-    let newErrors: { [key: string]: string } = {};
+    const newErrors: { [key: string]: string } = {};
     
     // Validasi form
     const emailError = validateemail(email);
@@ -118,12 +118,9 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
         // console.error("Error creating user:", data.error);
         setErrors({ general: data.error || "Something went wrong!" });
       }
-    } catch (error: any) {
-      // console.error("An error occurred:", error);
-      setErrors({ general: "Something went wrong. Please try again." });
     } finally {
       setIsSubmitting(false);
-      setMessage("Pendaftaran berhasil, silahkan cek email anda untuk verifikasi.");
+      
     }
   };
   
@@ -133,14 +130,11 @@ const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
   useEffect(() => {
     if (formData.password) {
       const passwordError = validatePassword(formData.password);
-      if (!passwordError && errors.password) {
-        setErrors((prevErrors) => {
-          const { password, ...rest } = prevErrors; // Remove password error
-          return rest;
-        });
+      if (!passwordError) {
+        setErrors((prevErrors) => ({ ...prevErrors, password: null }));
       }
     }
-  }, [formData.password, errors.password]);
+  }, [formData.password]);
 
   // Toggle password visibility
   const togglePasswordVisibility = (): void => {
