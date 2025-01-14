@@ -1,8 +1,8 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "../../../lib/prisma";
 import { sign } from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
   const { kode } = await req.json(); // Receive 'kode' from frontend
 
   // Validate input

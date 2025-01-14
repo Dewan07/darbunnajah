@@ -1,16 +1,10 @@
-// filepath: /c:/Users/done/Documents/reactjs/nextjs/darbunnajah/src/components/SessionProviderWrapper.tsx
-"use client";
+"use client"; // Menandakan ini adalah komponen klien
 
 import { SessionProvider } from "next-auth/react";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 
-interface Props {
-  children: ReactNode;
-  session: any;
-}
-
-const SessionProviderWrapper = ({ children, session }: Props) => {
-  return <SessionProvider session={session}>{children}</SessionProvider>;
+const SessionProviderWrapper = ({ children }: { children: ReactNode }) => {
+  return <SessionProvider>{children}</SessionProvider>;
 };
 
 export default SessionProviderWrapper;

@@ -14,7 +14,7 @@ import {
   faBrain,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { useSession, signOut } from "next-auth/react";
+import { useSession,  } from "next-auth/react";
 import ButtonProfile from "./ButtonDropDownProfile";
 import SignOutButton from "./ButtonLogoutMobile";
 

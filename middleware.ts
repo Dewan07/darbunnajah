@@ -23,5 +23,5 @@ export async function middleware(req: NextRequest) {
 
 // Tentukan route mana yang diproteksi
 export const config = {
-  matcher: ["/profile/:path*", "/dashboard/:path*"], // Proteksi halaman tertentu
+  matcher: ["/profile/:path*", "/dashboard/:path*","/ai/:path*"], // Proteksi halaman tertentu
 };

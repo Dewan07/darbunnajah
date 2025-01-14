@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import SessionProviderWrapper from "@/components/SessionProviderWrapper";
+
+import React from "react";
+import SessionWrapper from "../components/SessionProviderWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,24 +14,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Darbunnajah",
   description: "Website Untuk Belajar",
 };
 
-export default function RootLayout({
-  children,
-  session,
-}: {
-  children: React.ReactNode;
-  session: any;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <SessionProviderWrapper session={session} >
-          {children}
-        </SessionProviderWrapper>
+        <SessionWrapper>
+          {children} {/* Bagian anak yang memerlukan session bisa diletakkan di sini */}
+        </SessionWrapper>
       </body>
     </html>
   );

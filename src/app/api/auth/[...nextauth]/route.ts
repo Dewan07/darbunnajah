@@ -2,7 +2,7 @@
 
 
 import NextAuth from "next-auth";
-import { authOptions } from "@/lib/auth"; // Import konfigurasi
+import { authOptions } from "../../../../lib/auth"; // Import konfigurasi
 
 
 const handler = NextAuth(authOptions);

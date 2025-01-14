@@ -1,7 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "../lib/prisma"
 import EmailProvider from "next-auth/providers/email";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
@@ -97,14 +97,14 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
 
-    async jwt({ token, user,profile,account }) {
+    async jwt({ token, user}) {
       // Tambahkan user ID ke token JWT
       if (user?.id) {
         token.id = user.id;
       }
       return token;
     },
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       // Tambahkan ID pengguna ke sesi
       if ("email" in token) {
         session.user.email = token.email;
@@ -116,7 +116,7 @@ export const authOptions: NextAuthOptions = {
     },
     
 
-    async redirect({ url, baseUrl }) {
+    async redirect({baseUrl }) {
       return `${baseUrl}/profile`;
     },
     

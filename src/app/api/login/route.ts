@@ -1,10 +1,7 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "../../../lib/prisma";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
-
-
-const SECRET_KEY = process.env.NEXTAUTH_SECRET as string;
 
 export async function POST(req: NextRequest) {
   const { email, password }: { email: string; password: string } =

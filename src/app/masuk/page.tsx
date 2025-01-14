@@ -1,8 +1,8 @@
 "use client";
 
-import "@/app/globals.css";
+import "../../app/globals.css";
 import { SetStateAction, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../../components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,17 +10,17 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "../../components/ui/card";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import Footer from "@/components/footer";
+import Footer from "../../components/footer";
 import Link from "next/link";
-import ButtonGoogle from "@/components/ButtonGoogle";
-import { prisma } from "@/lib/prisma";
+import ButtonGoogle from "../../components/ButtonGoogle";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
+import React from "react";
 
 export default function Masuk() {
   const [email, setEmail] = useState("");

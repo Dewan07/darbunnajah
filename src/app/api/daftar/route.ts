@@ -1,11 +1,11 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "../../../lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
 import bcrypt from "bcryptjs";
-import { sendEmail } from "@/lib/nodemailer";
-import { sign } from "jsonwebtoken";
+import { sendEmail } from "../../../lib/nodemailer";
 
 
-export async function POST(req: NextRequest, res: NextResponse) {
+
+export async function POST(req: NextRequest) {
   try {
     // Parsing body dari request
     const { email, password } = await req.json();
