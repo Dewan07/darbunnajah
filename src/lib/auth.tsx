@@ -7,6 +7,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 
 // Extend the Session and JWT types
+ /* eslint-disable no-unused-vars */
 declare module "next-auth" {
   interface Session {
     user: {
@@ -17,7 +18,8 @@ declare module "next-auth" {
     };
   }
 }
-
+ /* eslint-enable no-unused-vars */
+ /* eslint-disable no-unused-vars */
 declare module "next-auth/jwt" {
   interface JWT {
     id: string;
