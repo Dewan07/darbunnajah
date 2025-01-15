@@ -10,6 +10,7 @@ export async function middleware(req: NextRequest) {
   // Jika token tidak ada, redirect ke halaman login
   if (!token) {
     return NextResponse.redirect(new URL("/profile", req.url));
+    
   }
 
   try {

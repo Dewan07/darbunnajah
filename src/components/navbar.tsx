@@ -15,9 +15,10 @@ import {
   faBrain,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import { useSession,  } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import ButtonProfile from "./ButtonDropDownProfile";
 import SignOutButton from "./ButtonLogoutMobile";
+import { Button } from "./ui/button";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -29,7 +30,7 @@ const Navbar: React.FC = () => {
 
   const toggleNavbar = (): void => setIsOpen(!isOpen);
   const closeNavbar = (): void => setIsOpen(false);
-  
+
   return (
     <>
       {/* Navbar untuk layar besar */}
@@ -50,32 +51,50 @@ const Navbar: React.FC = () => {
         <ul className="flex space-x-6">
           <li>
             <Link href="/" aria-label="beranda" title="Beranda">
-              <FontAwesomeIcon icon={faHouse} className="text-3xl hover:text-gray-600" />
+              <FontAwesomeIcon
+                icon={faHouse}
+                className="text-3xl hover:text-gray-600"
+              />
             </Link>
           </li>
           <li>
             <Link href="/komunitas" aria-label="Komunitas" title="Komunitas">
-              <FontAwesomeIcon icon={faHeadSideCough} className="text-3xl hover:text-gray-600" />
+              <FontAwesomeIcon
+                icon={faHeadSideCough}
+                className="text-3xl hover:text-gray-600"
+              />
             </Link>
           </li>
           <li>
             <Link href="/ai" aria-label="KecerdasanBuatan" title="Ai">
-              <FontAwesomeIcon icon={faBrain} className="text-3xl hover:text-gray-600" />
+              <FontAwesomeIcon
+                icon={faBrain}
+                className="text-3xl hover:text-gray-600"
+              />
             </Link>
           </li>
           <li>
             <Link href="/buku" aria-label="Buku" title="Buku">
-              <FontAwesomeIcon icon={faBook} className="text-3xl hover:text-gray-600" />
+              <FontAwesomeIcon
+                icon={faBook}
+                className="text-3xl hover:text-gray-600"
+              />
             </Link>
           </li>
           <li>
             <Link href="/kelas" aria-label="Kelas" title="Kelas">
-              <FontAwesomeIcon icon={faChalkboardTeacher} className="text-3xl hover:text-gray-600" />
+              <FontAwesomeIcon
+                icon={faChalkboardTeacher}
+                className="text-3xl hover:text-gray-600"
+              />
             </Link>
           </li>
           <li>
             <Link href="/pesan" aria-label="Pesan" title="Pesan">
-              <FontAwesomeIcon icon={faEnvelope} className="text-3xl hover:text-gray-600" />
+              <FontAwesomeIcon
+                icon={faEnvelope}
+                className="text-3xl hover:text-gray-600"
+              />
             </Link>
           </li>
         </ul>
@@ -117,53 +136,103 @@ const Navbar: React.FC = () => {
               className="self-end text-3xl cursor-pointer"
               onClick={closeNavbar}
             />
-            <div className="w-20 h-20 relative rounded-full overflow-hidden mt-4">
-              <Image
-                src={profileImageSrc}
-                alt="User Profile"
-                width={80}
-                height={80}
-                className="rounded-full"
-                priority
-              />
-            </div>
-            <div className="mt-4 text-center">
-              <p className="font-bold">{userName}</p>
-              <p className="text-sm text-gray-600 dark:text-gray-300">{userEmail}</p>
-            </div>
+            {session && (
+              <div>
+                <div className="w-20 h-20 relative rounded-full overflow-hidden mt-4 mx-auto my-auto">
+                  <Image
+                    src={profileImageSrc}
+                    alt="User Profile"
+                    width={80}
+                    height={80}
+                    className="rounded-full"
+                    priority
+                  />
+                </div>
+                <div className="mt-4 text-center">
+                  <p className="font-bold">{userName}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    {userEmail}
+                  </p>
+                </div>
+              </div>
+            )}
+
             <ul className="mt-6 space-y-3 w-full">
               <li className="flex items-center space-x-4">
-                <FontAwesomeIcon icon={faHeadSideCough} className="text-3xl hover:text-gray-600" />
-                <Link href="/komunitas" onClick={closeNavbar} className="font-semibold">
+                <FontAwesomeIcon
+                  icon={faHeadSideCough}
+                  className="text-3xl hover:text-gray-600"
+                />
+                <Link
+                  href="/komunitas"
+                  onClick={closeNavbar}
+                  className="font-semibold"
+                >
                   Komunitas
                 </Link>
               </li>
               <li className="flex items-center space-x-4">
-                <FontAwesomeIcon icon={faBrain} className="text-3xl hover:text-gray-600" />
-                <Link href="/ai" onClick={closeNavbar} className="font-semibold">
+                <FontAwesomeIcon
+                  icon={faBrain}
+                  className="text-3xl hover:text-gray-600"
+                />
+                <Link
+                  href="/ai"
+                  onClick={closeNavbar}
+                  className="font-semibold"
+                >
                   Ai
                 </Link>
               </li>
               <li className="flex items-center space-x-4">
-                <FontAwesomeIcon icon={faBook} className="text-3xl hover:text-gray-600" />
-                <Link href="/buku" onClick={closeNavbar} className="font-semibold">
+                <FontAwesomeIcon
+                  icon={faBook}
+                  className="text-3xl hover:text-gray-600"
+                />
+                <Link
+                  href="/buku"
+                  onClick={closeNavbar}
+                  className="font-semibold"
+                >
                   Buku
                 </Link>
               </li>
               <li className="flex items-center space-x-4">
-                <FontAwesomeIcon icon={faChalkboardTeacher} className="text-3xl hover:text-gray-600" />
-                <Link href="/kelas" onClick={closeNavbar} className="font-semibold">
+                <FontAwesomeIcon
+                  icon={faChalkboardTeacher}
+                  className="text-3xl hover:text-gray-600"
+                />
+                <Link
+                  href="/kelas"
+                  onClick={closeNavbar}
+                  className="font-semibold"
+                >
                   Kelas
                 </Link>
               </li>
               <li className="flex items-center space-x-4">
-                <FontAwesomeIcon icon={faEnvelope} className="text-3xl hover:text-gray-600" />
-                <Link href="/pesan" onClick={closeNavbar} className="font-semibold">
+                <FontAwesomeIcon
+                  icon={faEnvelope}
+                  className="text-3xl hover:text-gray-600"
+                />
+                <Link
+                  href="/pesan"
+                  onClick={closeNavbar}
+                  className="font-semibold"
+                >
                   Pesan
                 </Link>
               </li>
             </ul>
-            <SignOutButton/>
+            <div className="mt-5">
+              {!session ? (
+                <>
+                  <Button onClick={() => signIn()}>Sign In</Button>
+                </>
+              ) : (
+                <SignOutButton />
+              )}
+            </div>
           </div>
         </div>
       </div>

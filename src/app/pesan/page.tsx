@@ -1,64 +1,66 @@
-// src/app/pesan/page.tsx
-"use client";   
-import React, { useState } from 'react';
+"use client";
+import { faBars, faCompass, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react";
 
-const PesanPage = () => {
-  const [messages, setMessages] = useState([
-    { sender: 'Anda', text: 'Halo, ada yang bisa saya bantu?' },
-    { sender: 'Pengguna', text: 'Saya butuh bantuan untuk proyek saya.' },
-    { sender: 'Anda', text: 'Tentu, proyek apa yang sedang Anda kerjakan?' },
-  ]);
-  const [newMessage, setNewMessage] = useState('');
+export default function Chat() {
+  // State untuk mengatur ukuran elemen
+  const [isExpanded, setIsExpanded] = useState(false);
+  // const [isSerachuser, setIsSearchUser] = useState(false);
 
-  // Fungsi untuk mengirim pesan
-  const handleSendMessage = () => {
-    if (newMessage.trim() !== '') {
-      setMessages([...messages, { sender: 'Anda', text: newMessage }]);
-      setNewMessage(''); // Kosongkan input setelah pesan dikirim
-    }
+  const toggleExpand = () => {
+    setIsExpanded((prev) => !prev);
   };
 
+  // const HandleSearchUser = () => {
+  //   setIsSearchUser(true);
+  // };
   return (
-    <div className="flex flex-col p-4 h-screen">
-      <h1 className="text-3xl font-semibold mb-4">Halaman Pesan</h1>
-      
-      {/* Area chat */}
-      <div className="flex-1 overflow-auto mb-4 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
-        <div className="space-y-4">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${message.sender === 'Anda' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`px-4 py-2 rounded-lg max-w-xs ${message.sender === 'Anda' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-900'}`}
-              >
-                <p className="font-semibold">{message.sender}</p>
-                <p>{message.text}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+    <>
+      {/* Navbar */}
 
-      {/* Input pesan */}
-      <div className="flex items-center">
-        <input
-          type="text"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Tulis pesan..."
-          className="flex-1 p-2 border border-gray-300 dark:border-gray-700 rounded-l-lg focus:outline-none dark:bg-gray-700 dark:text-white"
-        />
-        <button
-          onClick={handleSendMessage}
-          className="p-2 bg-blue-500 text-white rounded-r-lg hover:bg-blue-600"
+      {/* Main Content */}
+      <div className="flex h-screen flex-row">
+        {/* Section Kontak */}
+        <section
+          id="kontak"
+          className={`md:w-1/5 bg-slate-500 p-4 md:bg-pink-400 
+            transition-all
+            ease-in-out
+            duration-300
+            ${
+              isExpanded ? "w-1/3" : "w-1/6" // Memperbesar lebar hanya di perangkat mobile
+            }`}
         >
-          Kirim
-        </button>
-      </div>
-    </div>
-  );
-};
+          <FontAwesomeIcon
+            icon={faBars}
+            onClick={toggleExpand}
+            className="cursor-pointer "
+          />{" "}
+          <br />
+          {/* Konten kontak */}
+          <div className="inline-flex items-center">
+            <FontAwesomeIcon
+              icon={faSearch}
+              className="mt-5 cursor-pointer"
+              
+            />
+            <h2 className="ml-2">Cari</h2>
+          </div>
+        </section>
 
-export default PesanPage;
+        {/* Section Chat */}
+        <section id="chat" className="flex-grow bg-green-800 p-4">
+          <h2 className="text-white">CHAT</h2>
+          {/* Konten chat */}
+        </section>
+
+        {/* Section Status */}
+        <section id="status" className="md:w-1/6 flex-grow-0 bg-red-500 p-4">
+          <FontAwesomeIcon icon={faCompass} />
+          {/* Konten status */}
+        </section>
+      </div>
+    </>
+  );
+}
