@@ -5,7 +5,11 @@ const nextConfig: NextConfig = {
 
   serverExternalPackages: ["bcryptjs", "nodemailer"],
   images: {
-    domains: ["lh3.googleusercontent.com"],
+    remotePatterns:[
+      { hostname: 'dummyjson.com' },
+      { hostname: 'lh3.googleusercontent.com' }
+    ]
+
   }
   
 };

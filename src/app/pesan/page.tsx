@@ -1,65 +1,81 @@
 "use client";
-import { faBars, faCompass, faSearch } from "@fortawesome/free-solid-svg-icons";
+
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export default function Chat() {
-  // State untuk mengatur ukuran elemen
-  const [isExpanded, setIsExpanded] = useState(false);
-  // const [isSerachuser, setIsSearchUser] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [status, setStatus] = useState("loading");
 
-  const toggleExpand = () => {
-    setIsExpanded((prev) => !prev);
-  };
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const res = await fetch("https://dummyjson.com/users");
+        if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`);
+        const data = await res.json();
+        setUsers(data.users);
+        setStatus("success");
+      } catch (err) {
+        setStatus("error");
+        console.error(err);
+      }
+    };
 
-  // const HandleSearchUser = () => {
-  //   setIsSearchUser(true);
-  // };
+    getData();
+  }, []);
+
   return (
     <>
-      {/* Navbar */}
-
-      {/* Main Content */}
-      <div className="flex h-screen flex-row">
-        {/* Section Kontak */}
-        <section
-          id="kontak"
-          className={`md:w-1/5 bg-slate-500 p-4 md:bg-pink-400 
-            transition-all
-            ease-in-out
-            duration-300
-            ${
-              isExpanded ? "w-1/3" : "w-1/6" // Memperbesar lebar hanya di perangkat mobile
-            }`}
-        >
-          <FontAwesomeIcon
-            icon={faBars}
-            onClick={toggleExpand}
-            className="cursor-pointer "
-          />{" "}
-          <br />
-          {/* Konten kontak */}
-          <div className="inline-flex items-center">
-            <FontAwesomeIcon
-              icon={faSearch}
-              className="mt-5 cursor-pointer"
-              
-            />
-            <h2 className="ml-2">Cari</h2>
-          </div>
-        </section>
-
-        {/* Section Chat */}
-        <section id="chat" className="flex-grow bg-green-800 p-4">
-          <h2 className="text-white">CHAT</h2>
-          {/* Konten chat */}
-        </section>
-
-        {/* Section Status */}
-        <section id="status" className="md:w-1/6 flex-grow-0 bg-red-500 p-4">
-          <FontAwesomeIcon icon={faCompass} />
-          {/* Konten status */}
-        </section>
+      <div className="flex justify-between items-center p-4">
+        <h1 className="text-2xl font-bold">Pesan</h1>
+        <Link href="/" className="flex items-center">
+          <Image
+            className="w-8 h-8 rounded"
+            src="/assets/logo.png"
+            alt="DARBUNNAJAH Logo"
+            width={30}
+            height={30}
+            priority
+          />
+        </Link>
+        <FontAwesomeIcon
+          icon={faCirclePlus}
+          className="text-blue-500"
+          style={{ fontSize: "24px" }}
+        />
+      </div>
+      <div>
+        {status === "loading" ? (
+          <p>Loading...</p>
+        ) : status === "error" ? (
+          <p className="text-red-500">Error: Unable to load data.</p>
+        ) : (
+          users.map((user) => (
+            <Card key={user.id}>
+              <CardContent>
+                {user.image ? (
+                  <Image
+                    src={user.image}
+                    alt={user.firstName || "User Photo"}
+                    width={100}
+                    height={100}
+                    className="rounded-full"
+                  />
+                ) : (
+                  <p>No photo available</p>
+                )}
+              </CardContent>
+              <CardFooter>
+                <p className="font-bold">{user.firstName} {user.lastName}</p>
+                <p>{user.email}</p>
+              </CardFooter>
+            </Card>
+          ))
+        )}
       </div>
     </>
   );
